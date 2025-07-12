@@ -68,8 +68,27 @@ void decimal_to_binary(int arr[], long long int num, int* size)
 	}
 }
 ```
-## Lab 2 : static keyword
-### Problem
+## Lab 2 : const keyword
+`unsigned char* ptr = &x;`<br>
+*Explaination*<br>
+`ptr` is a pointer to `unsigned char`.The value pointed to can be changed, and the pointer itself can point to different addresses.
+
+`unsigned char* const ptr = &x;`<br>
+*Explaination* <br>
+const pointer (this pointer can't point to another variable. only holding one address) to unsigned char<br>
+
+`const unsigned char* ptr = &x;`<br>
+*Explaination* <br>
+pointer to a const unsigned char (which means the value of the pointee couldn't be changed, but this pointer could point to different addresses)<br>
+
+
+`const unsigned char* const ptr = &x;`<br>
+*Explaination* <br>
+const ptr to const unsigned char (value of x wouldn't be changed nor the pointer would point to another variable)<br>
+
+
+## Lab 3 : static keyword
+### Problem : Notice the problem in the following codes
 ```c
 #include <stdio.h>
 
@@ -93,6 +112,58 @@ int increment(void)
 
 ```
 
+ Both count() and another_counter() access and modify the same global variable counter, so their behaviors are not independent. Also, any function in any file can change `counter`, leading to unpredictable bugs, especially in embedded systems. 
+
+```c
+#include <stdio.h>
+
+void count (void);
+void another_counter(void);
+int counter = 0;
+
+int main() {
+	count();
+	another_counter();
+	count();
+
+    return 0;
+}
+
+void count(void)
+{
+	counter++;
+	printf("%d\n",counter);
+}
+
+void another_counter(void)
+{
+	counter++;
+	printf("%d\n",counter);
+}
+```
+
+You can't modify counter through a pointer, the variable itself doesn’t persist between calls. `counter` is a normal local variable, it is reset to 0 every call. 
+
+```c
+#include <stdio.h>
+
+int increment(void);
+
+int main() {
+    increment();
+    increment();
+    increment();
+    return 0;
+}
+
+int increment(void) {
+    int counter = 0;         // new each time
+    int* ptr = &counter;
+    (*ptr)++;
+    printf("%d\n", counter);
+}
+
+```
 ### Solution : Fixed version (use static keyword)
 ```c
 #include <stdio.h>
@@ -118,7 +189,7 @@ int increment(void)
 ```
 
 
-## Lab 3
+## Lab 4
 ### Problem
 ```
 Write a C program to demonstrates how to use the `extern` keyword to share a global variable (sharedValue) between two source files `file1.c`, which contains the main function and modifies the variable, and `file2.c`, which defines the variable and contains a function (display) that accesses and prints its value.
