@@ -29,18 +29,22 @@
 #define DIO_HIGH		1
 #define DIO_LOW			0
 
+#define DIO_PORT_OUTPUT  0xFF
+#define DIO_PORT_INPUT	 0x00
 
+/* Initialize Registers */
+void MDIO_vInit(void);
 
 /* Pin functions */
-void DIO_vSetPinDir(u8 A_u8PortNo, u8 A_u8PinNo, u8 A_u8PinDir);
-void DIO_vSetPinVal(u8 A_u8PortNo, u8 A_u8PinNo, u8 A_u8PinVal);
-u8 DIO_u8GETPinVal(u8 A_u8PortNo, u8 A_u8PinNo);
-void DIO_vTogPinVal(u8 A_u8PortNo, u8 A_u8PinNo);
+void MDIO_vSetPinDir(u8 A_u8PortNo, u8 A_u8PinNo, u8 A_u8PinDir);
+void MDIO_vSetPinVal(u8 A_u8PortNo, u8 A_u8PinNo, u8 A_u8PinVal);
+u8 MDIO_u8GETPinVal(u8 A_u8PortNo, u8 A_u8PinNo);
+void MDIO_vTogPinVal(u8 A_u8PortNo, u8 A_u8PinNo);
 
 /* Port functions */
-void DIO_vSetPortDir(u8 A_u8PortNo, u8 A_u8PortDir);
-void DIO_vSetPortVal(u8 A_u8PortNo, u8 A_u8PortVal);
-u8 DIO_u8GETPortVal(u8 A_u8PortNo);
+void MDIO_vSetPortDir(u8 A_u8PortNo, u8 A_u8PortDir);
+void MDIO_vSetPortVal(u8 A_u8PortNo, u8 A_u8PortVal);
+u8 MDIO_u8GETPortVal(u8 A_u8PortNo);
 
 
 

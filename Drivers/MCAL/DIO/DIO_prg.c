@@ -11,8 +11,21 @@
 #include "DIO_int.h"
 #include "DIO_prv.h"
 
+void MDIO_vInit(void)
+{
+	DDRA  = 0;
+	DDRB  = 0;
+	DDRC  = 0;
+	DDRD  = 0;
 
-void DIO_vSetPinDir(u8 A_u8PortNo, u8 A_u8PinNo, u8 A_u8PinDir)
+	PORTA = 0;
+	PORTB = 0;
+	PORTC = 0;
+	PORTD = 0;
+
+}
+
+void MDIO_vSetPinDir(u8 A_u8PortNo, u8 A_u8PinNo, u8 A_u8PinDir)
 {
 	if(A_u8PinDir == DIO_OUTPUT)
 	{
@@ -51,7 +64,7 @@ void DIO_vSetPinDir(u8 A_u8PortNo, u8 A_u8PinNo, u8 A_u8PinDir)
 	}
 }
 
-void DIO_vSetPinVal(u8 A_u8PortNo, u8 A_u8PinNo, u8 A_u8PinVal)
+void MDIO_vSetPinVal(u8 A_u8PortNo, u8 A_u8PinNo, u8 A_u8PinVal)
 {
 	if(A_u8PinVal == DIO_HIGH)
 	{
@@ -89,7 +102,7 @@ void DIO_vSetPinVal(u8 A_u8PortNo, u8 A_u8PinNo, u8 A_u8PinVal)
 		}
 	}
 }
-u8 DIO_u8GETPinVal(u8 A_u8PortNo, u8 A_u8PinNo)
+u8 MDIO_u8GETPinVal(u8 A_u8PortNo, u8 A_u8PinNo)
 {
 	u8 L_u8PinVal = 0 ;
 	switch(A_u8PortNo)
@@ -110,7 +123,7 @@ u8 DIO_u8GETPinVal(u8 A_u8PortNo, u8 A_u8PinNo)
 	return L_u8PinVal;
 }
 
-void DIO_vSetPortDir(u8 A_u8PortNo, u8 A_u8PortDir)
+void MDIO_vSetPortDir(u8 A_u8PortNo, u8 A_u8PortDir)
 {
 
 	switch(A_u8PortNo)
@@ -131,7 +144,7 @@ void DIO_vSetPortDir(u8 A_u8PortNo, u8 A_u8PortDir)
 	}
 }
 
-void DIO_vSetPortVal(u8 A_u8PortNo, u8 A_u8PortVal)
+void MDIO_vSetPortVal(u8 A_u8PortNo, u8 A_u8PortVal)
 {
 	switch(A_u8PortNo)
 		{
@@ -151,7 +164,7 @@ void DIO_vSetPortVal(u8 A_u8PortNo, u8 A_u8PortVal)
 		}
 }
 
-u8 DIO_u8GETPortVal(u8 A_u8PortNo)
+u8 MDIO_u8GETPortVal(u8 A_u8PortNo)
 {
 	u8 L_u8Val = 0;
 		switch(A_u8PortNo)
@@ -173,7 +186,7 @@ u8 DIO_u8GETPortVal(u8 A_u8PortNo)
 
 }
 
-void DIO_vTogPinVal(u8 A_u8PortNo, u8 A_u8PinNo)
+void MDIO_vTogPinVal(u8 A_u8PortNo, u8 A_u8PinNo)
 {
 	switch(A_u8PortNo)
 		{
