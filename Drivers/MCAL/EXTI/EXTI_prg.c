@@ -94,14 +94,20 @@ void __vector_1(void) __attribute__((signal));
 void __vector_1(void)
 {
 	// call a specific function
-	G_EXTI_Callback[0]();
+	if(G_EXTI_Callback[0] != NULL)
+	{
+		G_EXTI_Callback[0]();
+	}
 }
 
 void __vector_2(void) __attribute__((signal));
 void __vector_2(void)
 {
 	// call a specific function
-	G_EXTI_Callback[1]();
+	if(G_EXTI_Callback[1] != NULL)
+	{
+		G_EXTI_Callback[1]();
+	}
 }
 
 
@@ -109,5 +115,8 @@ void __vector_3(void) __attribute__((signal));
 void __vector_3(void)
 {
 	// call a specific function
-	G_EXTI_Callback[2]();
+	if(G_EXTI_Callback[2] != NULL)
+	{
+		G_EXTI_Callback[2]();
+	}
 }
