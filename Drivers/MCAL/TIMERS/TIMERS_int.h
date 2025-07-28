@@ -26,7 +26,11 @@
 
 
 void MTIMERS_vInit(void);
-void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32Interval);
+void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32T_required);
+
+// CTC
+void MTIMERS_vSetInterval_CTC(void (*Fptr)(void),u32 A_u32T_required, u8 A_u8OCR_val);
+
 void MTIMERS_vStartTimer(void);
 void MTIMERS_vStopTimer(void);
 
