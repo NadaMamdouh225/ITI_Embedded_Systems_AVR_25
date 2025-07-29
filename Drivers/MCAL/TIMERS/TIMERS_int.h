@@ -11,7 +11,7 @@
 #define ENABLE	1
 #define DISABLE	0
 
-#define TIMERID_0  	DISABLE
+#define TIMERID_0  	ENABLE
 #define TIMERID_1  	ENABLE
 #define TIMERID_2  	DISABLE
 
@@ -25,6 +25,13 @@
 
 #define TIM_0	 0
 #define TIM_1_A	 1
+#define TIM_1	 2
+
+#define TRIG_TYPE_RISING	0
+#define TRIG_TYPE_FALLING	1
+
+
+#define ICU_MODE	0
 
 void MTIMERS_vInit(void);
 void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32T_required);
@@ -32,6 +39,13 @@ void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32T_required);
 // CTC
 void MTIMERS_vSetInterval_CTC(void (*Fptr)(void),u32 A_u32T_required, u8 A_u8OCR_val);
 void MTIMERS_vSetCompareMatch(u8 A_u8TimerID, u16 A_16OCR_val);
+
+void MTIMERS_vSetICU_CB(void (*Fptr)(void));
+u16 MTIMERS_u16GetCapturedValue(void);
+void MTIMERS_SetTrigger(u8 A_Trigger_Type);
+void MTIMERS_vEnableInterrupt(u8 A_u8TimerID, u8 A_u8TimerMode);
+void MTIMERS_vDisableInterrupt(u8 A_u8TimerID, u8 A_u8TimerMode);
+
 
 void MTIMERS_vStartTimer(void);
 void MTIMERS_vStopTimer(void);

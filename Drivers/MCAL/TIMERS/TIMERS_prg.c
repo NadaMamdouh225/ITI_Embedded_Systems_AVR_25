@@ -12,6 +12,7 @@
 
 static void (*G_TIMER_OVF_CB)(void) = NULL;
 static void(*G_TIMER_CTC_CB)(void) = NULL;
+static void(*G_TIMER1_ICU_CB)(void) = NULL;
 
 static u32 G_u32T_required=0;
 
@@ -24,29 +25,36 @@ void MTIMERS_vInit(void)
 	//	/*Enable interrupt OF mode */
 	//	SET_BIT(TIMSK,0);
 
-//	TCCR0 = 0b00001000;
-//	/*Enable interrupt CTC mode */
-//	SET_BIT(TIMSK,1);
+	//	TCCR0 = 0b00001000;
+	//	/*Enable interrupt CTC mode */
+	//	SET_BIT(TIMSK,1);
 #if TIMERID_0 == ENABLE
-	// Fast PWM mode
-	TCCR0 = 0b01101000;
+	// Fast PWM mode/ non-inverting /clk_8
+	TCCR0 = 0b01101010;
 
-#elif TIMERID_1 == ENABLE
-	/* Fast PWM mode */
-	// non inverting mode
-	SET_BIT(TCCR1A, 7);
-	CLR_BIT(TCCR1A, 6);
-	// waveform
-	SET_BIT(TCCR1A,1);
-	CLR_BIT(TCCR1A,0);
-	SET_BIT(TCCR1B,3);
-	SET_BIT(TCCR1B,4);
-	// prescaler (64)
-	SET_BIT(TCCR1B, 0);
-	SET_BIT(TCCR1B, 1);
-	CLR_BIT(TCCR1B, 2);
-	// value ICR1
-	ICR1 = 2499;
+#endif
+
+#if TIMERID_1 == ENABLE
+//	/* Fast PWM mode */
+//	// non inverting mode
+//	SET_BIT(TCCR1A, 7);
+//	CLR_BIT(TCCR1A, 6);
+//	// waveform
+//	SET_BIT(TCCR1A,1);
+//	CLR_BIT(TCCR1A,0);
+//	SET_BIT(TCCR1B,3);
+//	SET_BIT(TCCR1B,4);
+//	// prescaler (64)
+//	SET_BIT(TCCR1B, 0);
+//	SET_BIT(TCCR1B, 1);
+//	CLR_BIT(TCCR1B, 2);
+//	// value ICR1
+//	ICR1 = 2499;
+
+	TCCR1A = 0b00000000;
+	TCCR1B = 0b01000010;
+
+
 
 #endif
 
@@ -98,6 +106,53 @@ void MTIMERS_vSetCompareMatch(u8 A_u8TimerID, u16 A_16OCR_val)
 
 }
 
+void MTIMERS_vSetICU_CB(void (*Fptr)(void))
+{
+	G_TIMER1_ICU_CB = Fptr;
+}
+
+u16 MTIMERS_u16GetCapturedValue(void)
+{
+	return ICR1;
+}
+void MTIMERS_SetTrigger(u8 A_Trigger_Type)
+{
+	switch (A_Trigger_Type)
+	{
+	case TRIG_TYPE_RISING:
+		SET_BIT(TCCR1B, 6);
+		break;
+	case TRIG_TYPE_FALLING:
+		CLR_BIT(TCCR1B, 6);
+		break;
+	}
+}
+void MTIMERS_vEnableInterrupt(u8 A_u8TimerID, u8 A_u8TimerMode)
+{
+	if(A_u8TimerID == TIM_1)
+	{
+		switch(A_u8TimerMode)
+		{
+		case ICU_MODE:
+			SET_BIT(TIMSK, 5);
+			break;
+		}
+	}
+}
+void MTIMERS_vDisableInterrupt(u8 A_u8TimerID, u8 A_u8TimerMode)
+{
+	if(A_u8TimerID == TIM_1)
+	{
+		switch(A_u8TimerMode)
+		{
+		case ICU_MODE:
+			CLR_BIT(TIMSK, 5);
+			break;
+		}
+	}
+}
+
+
 
 void __vector_11(void) __attribute__((signal));
 void __vector_11(void)
@@ -130,3 +185,11 @@ void __vector_10(void)
 	}
 }
 
+void __vector_6(void) __attribute__((signal));
+void __vector_6(void)
+{
+	if(	G_TIMER1_ICU_CB != NULL)
+	{
+		G_TIMER1_ICU_CB();
+	}
+}
