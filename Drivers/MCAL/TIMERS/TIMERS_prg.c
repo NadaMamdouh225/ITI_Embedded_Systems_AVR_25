@@ -41,10 +41,12 @@ void MTIMERS_vInit(void)
 	CLR_BIT(TCCR1A,0);
 	SET_BIT(TCCR1B,3);
 	SET_BIT(TCCR1B,4);
-	// prescaler
-
+	// prescaler (64)
+	SET_BIT(TCCR1B, 0);
+	SET_BIT(TCCR1B, 1);
+	CLR_BIT(TCCR1B, 2);
 	// value ICR1
-
+	ICR1 = 2499;
 
 #endif
 
@@ -82,9 +84,18 @@ void MTIMERS_vStopTimer(void)
 
 }
 
-void MTIMERS_vSetCompareMatch(u8 A_u8OCR_val)
+void MTIMERS_vSetCompareMatch(u8 A_u8TimerID, u16 A_16OCR_val)
 {
-	OCR0 = A_u8OCR_val;
+	switch(A_u8TimerID)
+	{
+	case TIM_0:
+		OCR0 = A_16OCR_val;
+		break;
+	case TIM_1_A:
+		OCR1A = A_16OCR_val;
+		break;
+	}
+
 }
 
 

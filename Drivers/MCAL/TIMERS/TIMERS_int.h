@@ -23,14 +23,15 @@
 
 #define CLK_SELECT_PRESCALER	CLK_8
 
-
+#define TIM_0	 0
+#define TIM_1_A	 1
 
 void MTIMERS_vInit(void);
 void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32T_required);
 
 // CTC
 void MTIMERS_vSetInterval_CTC(void (*Fptr)(void),u32 A_u32T_required, u8 A_u8OCR_val);
-void MTIMERS_vSetCompareMatch(u8 A_u8OCR_val);
+void MTIMERS_vSetCompareMatch(u8 A_u8TimerID, u16 A_16OCR_val);
 
 void MTIMERS_vStartTimer(void);
 void MTIMERS_vStopTimer(void);
