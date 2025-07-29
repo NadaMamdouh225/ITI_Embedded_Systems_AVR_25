@@ -11,8 +11,8 @@
 #define ENABLE	1
 #define DISABLE	0
 
-#define TIMERID_0  	ENABLE
-#define TIMERID_1  	DISABLE
+#define TIMERID_0  	DISABLE
+#define TIMERID_1  	ENABLE
 #define TIMERID_2  	DISABLE
 
 
@@ -30,6 +30,7 @@ void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32T_required);
 
 // CTC
 void MTIMERS_vSetInterval_CTC(void (*Fptr)(void),u32 A_u32T_required, u8 A_u8OCR_val);
+void MTIMERS_vSetCompareMatch(u8 A_u8OCR_val);
 
 void MTIMERS_vStartTimer(void);
 void MTIMERS_vStopTimer(void);

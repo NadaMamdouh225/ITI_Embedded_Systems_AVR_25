@@ -23,10 +23,30 @@ void MTIMERS_vInit(void)
 	//
 	//	/*Enable interrupt OF mode */
 	//	SET_BIT(TIMSK,0);
-	TCCR0 = 0b00001000;
-	/*Enable interrupt CTC mode */
-	SET_BIT(TIMSK,1);
 
+//	TCCR0 = 0b00001000;
+//	/*Enable interrupt CTC mode */
+//	SET_BIT(TIMSK,1);
+#if TIMERID_0 == ENABLE
+	// Fast PWM mode
+	TCCR0 = 0b01101000;
+
+#elif TIMERID_1 == ENABLE
+	/* Fast PWM mode */
+	// non inverting mode
+	SET_BIT(TCCR1A, 7);
+	CLR_BIT(TCCR1A, 6);
+	// waveform
+	SET_BIT(TCCR1A,1);
+	CLR_BIT(TCCR1A,0);
+	SET_BIT(TCCR1B,3);
+	SET_BIT(TCCR1B,4);
+	// prescaler
+
+	// value ICR1
+
+
+#endif
 
 }
 void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32T_required)
@@ -62,7 +82,10 @@ void MTIMERS_vStopTimer(void)
 
 }
 
-
+void MTIMERS_vSetCompareMatch(u8 A_u8OCR_val)
+{
+	OCR0 = A_u8OCR_val;
+}
 
 
 void __vector_11(void) __attribute__((signal));
