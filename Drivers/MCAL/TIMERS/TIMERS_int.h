@@ -8,20 +8,6 @@
 #ifndef MCAL_TIMERS_TIMERS_INT_H_
 #define MCAL_TIMERS_TIMERS_INT_H_
 
-#define ENABLE	1
-#define DISABLE	0
-
-#define TIMERID_0  	ENABLE
-#define TIMERID_1  	ENABLE
-#define TIMERID_2  	DISABLE
-
-
-#define NO_CLK				0x00
-#define CLK_NO_PRESCALLING	0x01
-#define CLK_8				0x02
-
-
-#define CLK_SELECT_PRESCALER	CLK_8
 
 #define TIM_0	 0
 #define TIM_1_A	 1
@@ -47,7 +33,7 @@ void MTIMERS_vEnableInterrupt(u8 A_u8TimerID, u8 A_u8TimerMode);
 void MTIMERS_vDisableInterrupt(u8 A_u8TimerID, u8 A_u8TimerMode);
 
 
-void MTIMERS_vStartTimer(void);
-void MTIMERS_vStopTimer(void);
+void MTIMERS_vStartTimer(u8 A_u8TimerID);
+void MTIMERS_vStopTimer(u8 A_u8TimerID);
 
 #endif /* MCAL_TIMERS_TIMERS_INT_H_ */

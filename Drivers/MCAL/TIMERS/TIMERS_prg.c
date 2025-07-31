@@ -9,6 +9,7 @@
 
 #include "TIMERS_int.h"
 #include "TIMERS_prv.h"
+#include "TIMERS_cfg.h"
 
 static void (*G_TIMER_OVF_CB)(void) = NULL;
 static void(*G_TIMER_CTC_CB)(void) = NULL;
@@ -28,28 +29,62 @@ void MTIMERS_vInit(void)
 	//	TCCR0 = 0b00001000;
 	//	/*Enable interrupt CTC mode */
 	//	SET_BIT(TIMSK,1);
-#if TIMERID_0 == ENABLE
+
 	// Fast PWM mode/ non-inverting /clk_8
-	TCCR0 = 0b01101010;
+	//	TCCR0 = 0b01101010;
+#if TIMERID_0 == ENABLE
+
+#if TIMERID_0_MODE == NORMAL_OVERFLOW
+	CLR_BIT(TCCR0, WGM01);
+	CLR_BIT(TCCR0, WGM00);
+#elif TIMERID_0_MODE == PWM_PHASE_CORRECT
+	CLR_BIT(TCCR0, WGM01);
+	SET_BIT(TCCR0, WGM00);
+
+#elif TIMERID_0_MODE == CTC
+	SET_BIT(TCCR0, WGM01);
+	CLR_BIT(TCCR0, WGM00);
+
+#elif TIMERID_0_MODE == FAST_PWM
+	SET_BIT(TCCR0, WGM01);
+	SET_BIT(TCCR0, WGM00);
+
+#else
+#error "Incorrect mode"
+
+#endif
+
+#if INTERRUPR_CONTROL == ENABLE
+	MTIMERS_vEnableInterrupt(TIM_0, TIMERID_0_MODE);
+#elif INTERRUPR_CONTROL == DISABLE
+	MTIMERS_vDisableInterrupt(TIM_0, TIMERID_0_MODE);
+#else
+#error "Incorrect value"
+#endif
+
+	// Stop bit
+	CLR_BIT(TCCR0,CS02);
+	CLR_BIT(TCCR0,CS01);
+	CLR_BIT(TCCR0,CS00);
 
 #endif
 
 #if TIMERID_1 == ENABLE
-//	/* Fast PWM mode */
-//	// non inverting mode
-//	SET_BIT(TCCR1A, 7);
-//	CLR_BIT(TCCR1A, 6);
-//	// waveform
-//	SET_BIT(TCCR1A,1);
-//	CLR_BIT(TCCR1A,0);
-//	SET_BIT(TCCR1B,3);
-//	SET_BIT(TCCR1B,4);
-//	// prescaler (64)
-//	SET_BIT(TCCR1B, 0);
-//	SET_BIT(TCCR1B, 1);
-//	CLR_BIT(TCCR1B, 2);
-//	// value ICR1
-//	ICR1 = 2499;
+	//	/* Fast PWM mode */
+	//	// non inverting mode
+	//	SET_BIT(TCCR1A, 7);
+	//	CLR_BIT(TCCR1A, 6);
+	//	// waveform
+	//	SET_BIT(TCCR1A,1);
+	//	CLR_BIT(TCCR1A,0);
+	//	SET_BIT(TCCR1B,3);
+	//	SET_BIT(TCCR1B,4);
+	//	// prescaler (64)
+	//	SET_BIT(TCCR1B, 0);
+	//	SET_BIT(TCCR1B, 1);
+	//	CLR_BIT(TCCR1B, 2);
+	//	// value ICR1
+	//	ICR1 = 2499;
 
 	TCCR1A = 0b00000000;
 	TCCR1B = 0b01000010;
@@ -58,37 +93,47 @@ void MTIMERS_vInit(void)
 
 #endif
 
+#if TIMERID_2 == ENABLE
+
+#endif
 }
 void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32T_required)
 {
 	G_u32T_required = A_u32T_required;
 	G_TIMER_OVF_CB = Fptr;
-	MTIMERS_vStartTimer();
+//	MTIMERS_vStartTimer();
 }
 void MTIMERS_vSetInterval_CTC(void (*Fptr)(void),u32 A_u32T_required, u8 A_u8OCR_val)
 {
 	G_TIMER_CTC_CB = Fptr;
 	G_u32T_required = A_u32T_required;
 	OCR0 = A_u8OCR_val;
-	MTIMERS_vStartTimer();
+//	MTIMERS_vStartTimer();
 }
-void MTIMERS_vStartTimer(void)
+void MTIMERS_vStartTimer(u8 A_u8TimerID)
 {
-#if	TIMERID_0 == ENABLE
-	TCCR0 = (TCCR0 & 0xF8) | (0x07 & CLK_SELECT_PRESCALER);
+	if(A_u8TimerID == TIM_0)
+	{
+		TCCR0 = (TCCR0 & 0xF8) | (0x07 & CLK_SELECT_PRESCALER_TIM0);
+	}
+	if(A_u8TimerID == TIM_1)
+	{
+		TCCR1B = (TCCR1B & 0xF8) | (0x07 & CLK_SELECT_PRESCALER_TIM1);
+	}
 
-#endif
 
 
 }
-void MTIMERS_vStopTimer(void)
+void MTIMERS_vStopTimer(u8 A_u8TimerID)
 {
-#if	TIMERID_0 == ENABLE
-	CLR_BIT(TCCR0, 0);
-	CLR_BIT(TCCR0, 1);
-	CLR_BIT(TCCR0, 2);
-
-#endif
+	if(A_u8TimerID == TIM_0)
+	{
+		TCCR0 = (TCCR0 & 0xF8) | (0x07 & 0x00);
+	}
+	if(A_u8TimerID == TIM_1)
+	{
+		TCCR1B = (TCCR1B & 0xF8) | (0x07 & 0x00);
+	}
 
 }
 
@@ -129,6 +174,18 @@ void MTIMERS_SetTrigger(u8 A_Trigger_Type)
 }
 void MTIMERS_vEnableInterrupt(u8 A_u8TimerID, u8 A_u8TimerMode)
 {
+	if(A_u8TimerID == TIM_0)
+	{
+		switch(A_u8TimerMode)
+		{
+		case NORMAL_OVERFLOW:
+			SET_BIT(TIMSK, 0);
+			break;
+		case CTC:
+			SET_BIT(TIMSK, 1);
+			break;
+		}
+	}
 	if(A_u8TimerID == TIM_1)
 	{
 		switch(A_u8TimerMode)
@@ -141,6 +198,18 @@ void MTIMERS_vEnableInterrupt(u8 A_u8TimerID, u8 A_u8TimerMode)
 }
 void MTIMERS_vDisableInterrupt(u8 A_u8TimerID, u8 A_u8TimerMode)
 {
+	if(A_u8TimerID == TIM_0)
+	{
+		switch(A_u8TimerMode)
+		{
+		case NORMAL_OVERFLOW:
+			CLR_BIT(TIMSK, 0);
+			break;
+		case CTC:
+			CLR_BIT(TIMSK, 1);
+			break;
+		}
+	}
 	if(A_u8TimerID == TIM_1)
 	{
 		switch(A_u8TimerMode)
