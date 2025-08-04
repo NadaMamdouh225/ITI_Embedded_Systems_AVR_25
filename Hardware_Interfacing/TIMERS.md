@@ -1,4 +1,8 @@
 # Session: Timers
+## Timer Calculation
+<img src="../assets/_0.png">
+<br>
+
 ## Lab 1: Overflow mode
 ```c
 /*
