@@ -1,9 +1,8 @@
 # Session: FreeRTOS
+## Lab 1:
 `Using FreeRTOS:` We have two tasks. First task blinks a LED every 200 msec and the other one
 blinks a LED every 1000 msec.
 The two tasks run in parallel.
-
-## Lab 1:
 
 ### FreeRTOSConfig.h
 
