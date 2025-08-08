@@ -16,6 +16,7 @@ static void (*G_TIMER_OVF_CB)(void) = NULL;
 static void(*G_TIMER_CTC_CB)(void) = NULL;
 static void(*G_TIMER1_ICU_CB)(void) = NULL;
 
+static u8 G_u8Timer0Preload = 0;
 static u32 G_u32IntervalCount=0;
 
 void MTIMERS_vInit(void)
@@ -144,6 +145,7 @@ void MTIMER_vSetPreloadValue(u8 A_u8TimerId ,u16 A_u16Preload)
 	{
 	case TIMERID_0:
 		TCNT0 = (u8)A_u16Preload;
+		G_u8Timer0Preload = (u8)A_u16Preload;
 		break;
 	}
 
@@ -239,6 +241,10 @@ void __vector_11(void) __attribute__((signal));
 void __vector_11(void)
 {
 	static u32 LS_u32T_OVF = 0;
+
+    // Reload the preload value every overflow
+	TCNT0 = G_u8Timer0Preload;
+
 	LS_u32T_OVF++;
 	if(LS_u32T_OVF == G_u32IntervalCount)
 	{
