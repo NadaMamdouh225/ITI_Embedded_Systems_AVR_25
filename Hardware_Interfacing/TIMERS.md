@@ -3,7 +3,7 @@
 <img src="../assets/_0.png">
 <br>
 
-## Lab 1: Overflow mode
+## Lab 1: Overflow mode with estimate value
 ```c
 /*
  * main.c
@@ -47,6 +47,52 @@ int main()
 }
 
 ```
+## Lab 1: Overflow mode with absolute value
+```c
+/*
+ * main.c
+ *
+ *  Created on: Jul 27, 2025
+ *      Author: Nada Mamdouh
+ */
+#define F_CPU 	8000000UL
+#include "../LIB/STD_TYPES.h"
+#include "../MCAL/DIO/DIO_int.h"
+#include "../MCAL/ADC/ADC_int.h"
+#include "../HAL/LCD/LCD_int.h"
+#include "../MCAL/GIE/GIE_int.h"
+#include "../MCAL/TIMERS/TIMERS_int.h"
+#include <util/delay.h>
+
+void Toggle(void)
+{
+	MDIO_vTogPinVal(DIO_PORTA, DIO_PIN0);
+}
+
+int main()
+{
+	MDIO_vSetPinDir(DIO_PORTA, DIO_PIN0, DIO_OUTPUT);
+	MTIMERS_vInit();
+	MGIE_vEnableGlobalInterrupt();
+	// toggle each 500ms
+	MTIMER_vSetPreloadValue(TIMERID_0, 224);
+	MTIMERS_vSetIntervalAsych_CB(Toggle,1954);
+
+
+	while(1)
+	{
+
+
+	}
+
+
+
+
+	return 0;
+}
+
+```
+
 ## Lab 2: CTC mode
 ```c
 /*
