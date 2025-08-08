@@ -10,7 +10,8 @@ The two tasks run in parallel.
 #define configCPU_CLOCK_HZ			( ( unsigned long ) 8000000 )
 #define configTICK_RATE_HZ			( ( portTickType ) 1000 )  	// 1 OS tick each 1ms
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 ) // max 4 then priorities are (0, 1, 2, 3)
-
+#define configMINIMAL_STACK_SIZE	( ( unsigned short ) 85 )
+#define configTOTAL_HEAP_SIZE		( (size_t ) ( 1000 ) )
 ```
 ### main.c
 ```c
@@ -23,7 +24,6 @@ The two tasks run in parallel.
 #define F_CPU 	8000000UL
 #include "../LIB/STD_TYPES.h"
 #include "../MCAL/DIO/DIO_int.h"
-#include "../MCAL/ADC/ADC_int.h"
 #include "../HAL/LCD/LCD_int.h"
 
 #include "../FreeRTOS/FreeRTOS.h"
@@ -35,7 +35,7 @@ void Task_LED1(void *A_Pv)
 	while(1)
 	{
 		MDIO_vTogPinVal(DIO_PORTA, DIO_PIN0);
-		vTaskDelay(1000);
+		vTaskDelay(200);
 	}
 }
 void Task_LED2(void *A_Pv)
@@ -43,19 +43,11 @@ void Task_LED2(void *A_Pv)
 	while(1)
 	{
 		MDIO_vTogPinVal(DIO_PORTA, DIO_PIN1);
-		vTaskDelay(2000);
+		vTaskDelay(1000);
 	}
 
 }
-void Task_LED3(void *A_Pv)
-{
-	while(1)
-	{
-		MDIO_vTogPinVal(DIO_PORTA, DIO_PIN2);
-		vTaskDelay(3000);
-	}
 
-}
 
 
 
@@ -64,12 +56,10 @@ int main()
 
 	MDIO_vSetPinDir(DIO_PORTA, DIO_PIN0, DIO_OUTPUT);
 	MDIO_vSetPinDir(DIO_PORTA, DIO_PIN1, DIO_OUTPUT);
-	MDIO_vSetPinDir(DIO_PORTA, DIO_PIN2, DIO_OUTPUT);
 
 	/* Create Task */
 	xTaskCreate(Task_LED1,(signed const char * ) "LED1", 100,  NULL, 1, NULL);
 	xTaskCreate(Task_LED2,(signed const char * ) "LED2", 100,  NULL, 3, NULL);
-	xTaskCreate(Task_LED3,(signed const char * ) "LED3", 100,  NULL, 2, NULL);
 
 	/* Start Scheduler */
 	vTaskStartScheduler();
@@ -81,6 +71,7 @@ int main()
 
 	return 0;
 }
+
 
 ```
 ## Lab 2:
