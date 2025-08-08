@@ -3,6 +3,7 @@
  *
  *  Created on: Jul 27, 2025
  *      Author: Nada Mamdouh
+ *      Version: 1.0
  */
 
 #ifndef MCAL_TIMERS_TIMERS_INT_H_
@@ -20,10 +21,11 @@
 #define ICU_MODE	0
 
 void MTIMERS_vInit(void);
-void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32T_required);
+void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32IntervalCount);
+void MTIMER_vSetPreloadValue(u8 A_u8TimerId ,u16 A_u16Preload);
 
 // CTC
-void MTIMERS_vSetInterval_CTC(void (*Fptr)(void),u32 A_u32T_required, u8 A_u8OCR_val);
+void MTIMERS_vSetInterval_CTC(void (*Fptr)(void),u32 A_u32IntervalCount, u8 A_u8OCR_val);
 void MTIMERS_vSetCompareMatch(u8 A_u8TimerID, u16 A_16OCR_val);
 
 void MTIMERS_vSetICU_CB(void (*Fptr)(void));

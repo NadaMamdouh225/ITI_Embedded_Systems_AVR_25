@@ -3,6 +3,7 @@
  *
  *  Created on: Jul 27, 2025
  *      Author: Nada Mamdouh
+ *      Version: 1.0
  */
 #include "../../LIB/STD_TYPES.h"
 #include "../../LIB/BIT_MATH.h"
@@ -15,7 +16,7 @@ static void (*G_TIMER_OVF_CB)(void) = NULL;
 static void(*G_TIMER_CTC_CB)(void) = NULL;
 static void(*G_TIMER1_ICU_CB)(void) = NULL;
 
-static u32 G_u32T_required=0;
+static u32 G_u32IntervalCount=0;
 
 void MTIMERS_vInit(void)
 {
@@ -97,16 +98,16 @@ void MTIMERS_vInit(void)
 
 #endif
 }
-void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32T_required)
+void MTIMERS_vSetIntervalAsych_CB(void (*Fptr)(void), u32 A_u32IntervalCount)
 {
-	G_u32T_required = A_u32T_required;
+	G_u32IntervalCount = A_u32IntervalCount;
 	G_TIMER_OVF_CB = Fptr;
 //	MTIMERS_vStartTimer();
 }
-void MTIMERS_vSetInterval_CTC(void (*Fptr)(void),u32 A_u32T_required, u8 A_u8OCR_val)
+void MTIMERS_vSetInterval_CTC(void (*Fptr)(void),u32 A_u32IntervalCount, u8 A_u8OCR_val)
 {
 	G_TIMER_CTC_CB = Fptr;
-	G_u32T_required = A_u32T_required;
+	G_u32IntervalCount = A_u32IntervalCount;
 	OCR0 = A_u8OCR_val;
 //	MTIMERS_vStartTimer();
 }
@@ -133,6 +134,17 @@ void MTIMERS_vStopTimer(u8 A_u8TimerID)
 	if(A_u8TimerID == TIM_1)
 	{
 		TCCR1B = (TCCR1B & 0xF8) | (0x07 & 0x00);
+	}
+
+}
+
+void MTIMER_vSetPreloadValue(u8 A_u8TimerId ,u16 A_u16Preload)
+{
+	switch(A_u8TimerId)
+	{
+	case TIMERID_0:
+		TCNT0 = (u8)A_u16Preload;
+		break;
 	}
 
 }
@@ -228,7 +240,7 @@ void __vector_11(void)
 {
 	static u32 LS_u32T_OVF = 0;
 	LS_u32T_OVF++;
-	if(LS_u32T_OVF == G_u32T_required)
+	if(LS_u32T_OVF == G_u32IntervalCount)
 	{
 		if(G_TIMER_OVF_CB != NULL)
 		{
@@ -244,7 +256,7 @@ void __vector_10(void)
 {
 	static u32 LS_u32Counter = 0;
 	LS_u32Counter++;
-	if(LS_u32Counter == G_u32T_required)
+	if(LS_u32Counter == G_u32IntervalCount)
 	{
 		if(G_TIMER_CTC_CB != NULL)
 		{

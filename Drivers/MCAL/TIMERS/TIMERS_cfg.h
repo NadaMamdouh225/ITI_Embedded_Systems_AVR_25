@@ -2,7 +2,8 @@
  * TIMERS_cfg.h
  *
  *  Created on: Jul 31, 2025
- *      Author: pc
+ *      Author: Nada Mamdouh
+ *      Version: 1.0
  */
 
 #ifndef MCAL_TIMERS_TIMERS_CFG_H_
@@ -38,7 +39,7 @@
    CTC
    FAST_PWM
  * */
-#define TIMERID_0_MODE	FAST_PWM
+#define TIMERID_0_MODE	CTC
 
 
 /*Interrupt enable/ disable */
