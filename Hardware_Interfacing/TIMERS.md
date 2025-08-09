@@ -121,7 +121,7 @@ int main()
 	MTIMERS_vInit();
 	MGIE_vEnableGlobalInterrupt();
 	// toggle each 500ms
-	MTIMERS_vSetInterval_CTC_Asynch(2000, 250,Toggle);
+	MTIMERS_vSetInterval_CTC_Asynch(2000, 249,Toggle);
 
 
 	while(1)
