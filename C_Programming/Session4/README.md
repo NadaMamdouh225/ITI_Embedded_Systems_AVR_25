@@ -36,8 +36,7 @@ int main()
 int main (void)
 {
 	int x =5;
-	int* ptr;
-	ptr = &x;
+	int* ptr = &x;
 	/* dereferance (This line means go to ptr, find out what is inside 
 	 it and consider it address and jump to it, then assign 20) */
 	*ptr = 20;
